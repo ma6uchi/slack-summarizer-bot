@@ -3,9 +3,6 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 def is_slack_retry(headers):
-    """
-    Slackイベントのリトライかどうかを判定します。
-    """
     return 'X-Slack-Retry-Num' in headers and headers['X-Slack-Retry-Num'] != '0'
 
 def send_message(client, channel, text, thread_ts=None, file_upload=False, title=None, content=None, filetype=None, initial_comment=None):
@@ -40,7 +37,7 @@ def send_processing_message(client, channel_id, user_id, ts):
     send_message(
         client,
         channel=channel_id,
-        text=f"<@{user_id}>さん、VTTファイルを検知しました。要約処理を開始しますね！少し時間がかかります。",
+        text=f"VTTファイルを検知しました。要約処理を開始します。",
         thread_ts=ts
     )
 
@@ -94,7 +91,7 @@ def send_error_message(client, channel_id, user_id, file_name, error_message, ts
     send_message(
         client,
         channel=channel_id,
-        text=f"<@{user_id}>さん、ファイル `{file_name}` の処理中にエラーが発生しました: {error_message}",
+        text=f"ファイル `{file_name}` の処理中にエラーが発生しました: {error_message}",
         thread_ts=ts
     )
 
@@ -116,6 +113,6 @@ def send_general_mention_message(client, channel_id, user_id, ts):
     send_message(
         client,
         channel=channel_id,
-        text=f"<@{user_id}>さん、メンションありがとう！VTTファイルを添付してくれれば要約するよ！",
+        text=f"<@{user_id}>さん、VTTファイルを添付してください",
         thread_ts=ts
     )
