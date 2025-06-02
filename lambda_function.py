@@ -80,12 +80,14 @@ def lambda_handler(event, context):
                         # VTTからテキストを抽出
                         extracted_text = vtt_parser.extract_text_from_vtt(vtt_content)
                         
-                        # Gemini APIでテキストを要約
-                        summarized_text = ai_processor.get_summary_from_gemini(extracted_text)
+                        # Gemini APIで会議の文字起こしを処理し、議事録を生成
+                        meeting_minutes_markdown = ai_processor.process_meeting_transcript(extracted_text)
 
-                        # 要約結果をSlackに返信
+                        # 議事録結果をSlackに返信 (send_summary_message がMarkdownも扱える想定)
+                        # send_summary_message 関数は `summarized_text` を受け取るので、
+                        # 変数名を `meeting_minutes_markdown` に合わせて渡します。
                         slack_utils.send_summary_message(
-                            client, channel_id, user_id, file_name, summarized_text, ts
+                            client, channel_id, user_id, file_name, meeting_minutes_markdown, ts
                         )
 
                     except Exception as e:
